@@ -1,0 +1,71 @@
+# depslib dependency file v1.0
+1430328008 source:c:\users\joseph\documents\projects\csci2270_final\src\effect.cpp
+	"Effect.h"
+
+1430328010 c:\users\joseph\documents\projects\csci2270_final\include\effect.h
+	<string>
+
+1430343762 source:c:\users\joseph\documents\projects\csci2270_final\src\entity.cpp
+	"Entity.h"
+	<cstdlib>
+	<iostream>
+	<Player.h>
+	<Player.h>
+
+1430328053 c:\users\joseph\documents\projects\csci2270_final\include\entity.h
+	<string>
+	<Effect.h>
+	<Item.h>
+	<Room.h>
+
+1430328152 c:\users\joseph\documents\projects\csci2270_final\include\item.h
+	<string>
+	<vector>
+	<Effect.h>
+	<Room.h>
+
+1430335104 c:\users\joseph\documents\projects\csci2270_final\include\room.h
+	<Entity.h>
+	<Effect.h>
+	<string>
+	<vector>
+	<Item.h>
+
+1430328096 c:\users\joseph\documents\projects\csci2270_final\include\player.h
+	<string>
+	<Entity.h>
+	<Effect.h>
+	<Item.h>
+	<Room.h>
+
+1430328148 source:c:\users\joseph\documents\projects\csci2270_final\src\item.cpp
+	"Item.h"
+	<Effect.h>
+
+1430342927 source:c:\users\joseph\documents\projects\csci2270_final\src\player.cpp
+	"Player.h"
+	<Effect.h>
+	<Entity.h>
+	<iostream>
+
+1430335104 source:c:\users\joseph\documents\projects\csci2270_final\src\room.cpp
+	"Room.h"
+	<Entity.h>
+	<Item.h>
+	<iostream>
+
+1430344230 source:c:\users\joseph\documents\projects\csci2270_final\main.cpp
+	<iostream>
+	<sstream>
+	<string>
+	<iterator>
+	<algorithm>
+	<Room.h>
+	<Player.h>
+	<Item.h>
+	<Effect.h>
+	<Entity.h>
+	<climits>
+	<stdlib.h>
+	<time.h>
+

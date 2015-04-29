@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <Player.h>
+#include <Player.h>
 
 using namespace EffectType;
 using namespace ItemType;
@@ -93,10 +94,10 @@ int Entity::attack(Room *r, Entity *target) {
             }
         }
         int acc = 0;
-        if (has_weap) {
-            for (int i = 0; i < getEffects().size(); i++) {
-                std::cout << getEffects().at(i)->getInfo() << std::endl;
-            }
+        if (has_weap || (dynamic_cast<Player*>(this) == NULL)) {
+            //for (int i = 0; i < getEffects().size(); i++) {
+            //    std::cout << getEffects().at(i)->getInfo() << std::endl;
+            //}
             if (getEffect(EffectType::FREEZE) == 0) {
                 if (!target->isPassive()) {
                     target->anger();
@@ -173,6 +174,7 @@ int Entity::attack(Room *r, Entity *target) {
                                 }
                             }
                             if (dmg < 2) {
+                                std::cout << base_attack << ", " << target->getBaseArmor() << ", " << dmg << std::endl;
                                 std::cout << "The attack damage is negligible." << std::endl;
                             }
                             else if (dmg < 10) {
@@ -185,8 +187,9 @@ int Entity::attack(Room *r, Entity *target) {
                                 std::cout << "The attack deals massive damage." << std::endl;
                             }
                             target->damage(dmg);
-                            target->addEffects(weapon, false);
-
+                            if (weapon != NULL) {
+                                target->addEffects(weapon, false);
+                            }
                             if (!target->isAlive()) {
                                 if (dynamic_cast<Player*>(target) == NULL) {
                                     std::cout << "The " << target->getName() << " dies." << std::endl;

@@ -13,6 +13,18 @@ Room::Room(bool o, std::vector<Entity*> es, std::vector<Item*> is, std::string n
     name = nm;
     basic_description = b_d;
     north = NULL, south = NULL, east = NULL, west = NULL, up = NULL, down = NULL;
+    instantDeath = false;
+}
+
+Room::Room(bool o, std::vector<Entity*> es, std::vector<Item*> is, std::string nm, std::string b_d, std::vector<Item*> us, bool i_d) {
+    open = o;
+    mobs = es;
+    items = is;
+    usables = us;
+    name = nm;
+    basic_description = b_d;
+    north = NULL, south = NULL, east = NULL, west = NULL, up = NULL, down = NULL;
+    instantDeath = i_d;
 }
 
 Room::Room(bool o, std::vector<Entity*> es, std::vector<Item*> is, std::string nm, std::string b_d, std::vector<Item*> us, Room *n, Room *s, Room *e, Room *w, Room *u, Room *d) {
@@ -263,4 +275,8 @@ std::string Room::getDescription() {
     }
 
     return s;
+}
+
+bool Room::death() {
+    return instantDeath;
 }

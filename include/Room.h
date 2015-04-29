@@ -18,6 +18,7 @@ class Room
 {
     public:
         Room(bool o, std::vector<Entity*> es, std::vector<Item*> is, std::string nm, std::string b_d, std::vector<Item*> us);
+        Room(bool o, std::vector<Entity*> es, std::vector<Item*> is, std::string nm, std::string b_d, std::vector<Item*> us, bool i_d);
         Room(bool o, std::vector<Entity*> es, std::vector<Item*> is, std::string nm, std::string b_d, std::vector<Item*> us, Room *n, Room *s, Room *e, Room *w, Room *u, Room *d);
         virtual ~Room();
         bool isOpen();
@@ -37,6 +38,7 @@ class Room
         Entity* removeEntity(Entity *e);
         std::string getName();
         std::string getDescription();
+        bool death();
         int Compare(Room *r) const {
             if (basic_description.compare(r->basic_description) != 0) {
                 return 1;
@@ -76,6 +78,7 @@ class Room
         Room *down;
         std::string name;
         std::string basic_description;
+        bool instantDeath;
         std::vector<Direction::E> availableDirections();
 };
 

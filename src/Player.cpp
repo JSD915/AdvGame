@@ -23,6 +23,9 @@ bool Player::grab(Room *r, Item *i) {
 bool Player::use(Item *i) {
     if (hasItem(i)) {
         if (i->getType() == ItemType::CONSUMABLE) {
+            for (int j = 0; j < i->getEffects().size(); j++) {
+                std::cout << "Effect added: " << i->getEffects().at(j)->getName() << std::endl;
+            }
             addEffects(i, true);
             addEffects(i, false);
             removeItem(i);

@@ -10,6 +10,7 @@
 #include <Entity.h>
 #include <climits>
 #include <stdlib.h>
+#include <time.h>
 
 
 int detail = 1;
@@ -20,6 +21,9 @@ bool actionTaken = false;
 bool changedRoom = false;
 std::string treasures[][2] = {{"pile of gold coins", ""},{"red gemstone", ""},{"bronze amulet",""},{"metallic ring", ""},{"small gold bar",""},
                              {"jade figurine", ""},{"silver figurine", ""},{"gold figurine", ""}, {"gold rings", ""},{"blue gemstone", ""}}; //TODO add descrips
+std::string colors[] = { "red","blue","green","black","white","orange","gray" };
+std::string adjs[] = { "cloudy","pulsing","bubbling","viscous","cold","hot","murky","clear" };
+std::string p_descrip = ", its properties are unknown to you.";
 
 std::vector<Effect*> getEffects(ItemType::E type, int power) {
     std::vector<Effect*> effects;
@@ -35,6 +39,7 @@ std::vector<Effect*> getEffects(ItemType::E type, int power) {
         break;
     case CONSUMABLE:
         effects.push_back(new Effect((power + 1) * 10, power + 1, static_cast<EffectType::E>(rand() % 14)));
+        break;
     }
     for (int i = 0; i < power; i++) {
         if (type == ItemType::ARMOR) {
@@ -69,12 +74,6 @@ void connectRooms(Room *rooms[14][14][4]) {
                     if (c != 13) {
                         rooms[r][c][f]->assignDirection(Direction::EAST, rooms[r][c + 1][f]);
                     }
-                    if (f != 0) {
-                        rooms[r][c][f]->assignDirection(Direction::UP, rooms[r][c][f - 1]);
-                    }
-                    if (f != 3) {
-                        rooms[r][c][f]->assignDirection(Direction::DOWN, rooms[r][c][f + 1]);
-                    }
                 }
             }
         }
@@ -95,6 +94,7 @@ void buildWorld() {
     std::vector<Effect*> noEffects;
     std::vector<EffectType::E> noRes;
     std::vector<Room*> noRooms;
+    ////// FLOOR ! //////
     rooms[13][6][0] = new Room(true, noEntities, noItems, "Cave Entrance",
         "You stand in a small cave entrance. You stand on a crumbling rock floor. The walls are moist and covered in moss. You can see light flowing in from the hole above you", noItems);
     rooms[12][6][0] = new Room(true, noEntities, noItems, "Carved Rock Hallway",
@@ -109,7 +109,7 @@ void buildWorld() {
     rooms[11][8][0] = new Room(true, noEntities, noItems, "Living Quarters East",
         "This is a room clear intended to sleep many. There are several dozen piles of rotten grass that were most likely used for beds.", noItems);
     int rnd = rand() % 10;
-    rooms[11][8][0]->addItem(new Item(noEffects, treasures[rnd][0], treasures[rnd][1], 0, ItemType::TREASURE, noItems, noRooms)); //REDO TREAURE ISSUE
+    rooms[11][8][0]->addItem(new Item(noEffects, treasures[rnd][0], treasures[rnd][1], 0, ItemType::TREASURE, noItems, noRooms));
     std::vector<Entity*> eR12_8_0;
     std::vector<Item*> iR12_8_0;
     iR12_8_0.push_back(new Item(noEffects, "claws", ", how do you have this?", 0, ItemType::WEAPON, noItems, noRooms));
@@ -117,12 +117,86 @@ void buildWorld() {
     eR12_8_0.at(0)->equip(iR12_8_0.at(0));
     rooms[12][8][0] = new Room(true, eR12_8_0, noItems, "Cave exit", "A long natural cave lead to the bright light of day.", noItems);
     rooms[10][7][0] = new Room(true, noEntities, noItems, "Living Quarters North",
-        "This is a room clear intended to sleep many. There are several dozen piles of rotten grass that were most likely used for beds.", noItems); //ADD KEY LATER
-
+        "This is a room clear intended to sleep many. There are several dozen piles of rotten grass that were most likely used for beds.", noItems);
+    //Item *finalKey = new Item(noEffects, "old rusted key", ", it's use is a mystery.", 0, ItemType::USABLE, noItems, noRooms); //ad room later
     rooms[10][8][0] = new Room(true, noEntities, noItems, "Grand Hall South",
         "You stand at the end of a large ornate hall. Massive pillars stretch up to the ceiling. Thick granite slabs line the floor. The hall stretches far in front of you.", noItems);
     rooms[9][8][0] = new Room(true, noEntities, noItems, "Grand Hall", "The grand hall continues onward. It is very consistent and symmetrical.", noItems);
     rooms[8][8][0] = new Room(true, noEntities, noItems, "Grand Hall North", "The end of the hall houses a very large, open, wooden door.", noItems);
+    std::vector<Item*> iR8_7_0;
+    int clr = rand() % 7;
+    int adj = rand() % 8;
+    iR8_7_0.push_back(new Item(getEffects(ItemType::CONSUMABLE, 0), adjs[adj] + " " + colors[clr] + " potion", p_descrip, 1, ItemType::CONSUMABLE, noItems, noRooms));
+    rooms[8][7][0] = new Room(true, noEntities, iR8_7_0, "The Kitchen", "The rooms appears to be a kitchen but there are no signs of any food, just empty bottles.", noItems);
+    rooms[8][9][0] = new Room(true, noEntities, noItems, "Hole in the wall", "A large section of wall has broken off exposing a hole in the ground.", noItems);
+    Room *deathDrop = new Room(true, noEntities, noItems, "A large drop.", "You fall for several seconds and die in a jagged rock pit.", noItems, true);
+    rooms[8][9][0]->assignDirection(Direction::DOWN, deathDrop);
+    iR8_7_0.clear();
+    iR8_7_0.push_back(new Item(noEffects, "throne", ", it is made of yellow and gray metals. Nothing and no one is in it.", 1000, ItemType::DECOR, noItems, noRooms));
+    rooms[7][8][0] = new Room(true, noEntities, iR8_7_0, "Throne Room", "You enter a large throne room. There are human remains scattered around the room and are piled mostly around the large throne at the rooms end. You notice behind the throne there is a trap door.", noItems);
+
+    ///// FLOOR 2 /////
+
+    std::vector<Item*> items;
+    std::vector<Entity*> mobs;
+    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 0), "red pile of ooze", ", its questionable as to whether you should eat this.", 1, ItemType::CONSUMABLE, noItems, noRooms));
+    Entity *ooze = new Entity(10, 5, 0, 25, 0, items, false, "ooze monster", " a weird ooze monster. It seems to have no formal structure.", true, false, true, noRes);
+    items.clear();
+    items.push_back(new Item(getEffects(ItemType::ARMOR, 1), "black cloak", ", its looks like it could help to protect you.", 3, ItemType::ARMOR, noItems, noRooms));
+    rooms[7][8][1] = new Room(true, noEntities, items, "Ladder up", "You stand on an intricate metallic surface. It slightly compresses under your feet. There are tunnels that run above it.", noItems);
+    rooms[7][8][0]->assignDirection(Direction::DOWN, rooms[7][8][1]);
+    rooms[7][8][1]->assignDirection(Direction::UP, rooms[7][8][0]);
+    items.clear();
+    rooms[6][8][1] = new Room(false, noEntities, noItems, "Surface entrance", "This room is connected to one with a ladder downward.", noItems);
+    mobs.push_back(ooze);
+    rooms[8][8][1] = new Room(true, mobs, noItems, "Hallway", "One of the tunnels through the rock.", noItems);
+    mobs.clear();
+    items.push_back(new Item(getEffects(ItemType::WEAPON, 10), "knights sword", ", a very deadly weapon", 10, ItemType::WEAPON, noItems, noRooms));
+    mobs.push_back(new Entity(1000, 1000, 100, 100, 100, items, false, "black knight", "black knight, a mysterious sight for these areas. It is strangely familiar.", true, false, false, noRes));
+    items.clear();
+    rooms[9][8][1] = new Room(true, mobs, noItems, "Hallway", "One of the tunnels through the rock.", noItems);
+    mobs.clear();
+    rooms[10][8][1] = new Room(true, noEntities, noItems, "Crossroads", "This tunnel has ended. It splits in two directions. To the west there is a metallic door.", noItems);
+    rooms[10][7][1] = new Room(true, noEntities, noItems, "Death from above", "As you entire the door seals behind you. Spikes slowly descend from the ceiling and impale you.", noItems, true);
+    rooms[10][9][1] = new Room(true, noEntities, noItems, "Hallway", "One of the tunnels through the rock.", noItems);
+    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 0), "blue pile of ooze", ", its questionable as to whether you should eat this.", 1, ItemType::CONSUMABLE, noItems, noRooms));
+    ooze = new Entity(10, 5, 0, 25, 0, items, false, "ooze monster", " a weird ooze monster. It seems to have no formal structure.", true, false, true, noRes);
+    items.clear();
+    mobs.push_back(ooze);
+    rooms[10][10][1] = new Room(true, mobs, noItems, "Hallway", "One of the tunnels through the rock.", noItems);
+    rooms[10][11][1] = new Room(true, noEntities, noItems, "Crossroads", "Two tunnels stop and meet here.", noItems);
+    mobs.clear();
+    rooms[9][11][1] = new Room(true, noEntities, noItems, "Hallway", "One of the tunnels through the rock. There is a strange room off to the east.", noItems);
+    rnd = rand() % 10;
+    items.push_back(new Item(noEffects, treasures[rnd][0], treasures[rnd][1], 0, ItemType::TREASURE, noItems, noRooms));
+    rnd = rand() % 10;
+    items.push_back(new Item(noEffects, treasures[rnd][0], treasures[rnd][1], 0, ItemType::TREASURE, noItems, noRooms));
+    rooms[9][12][1] = new Room(true, noEntities, items, "Small treasure room", "This clearly used to hold more treasure. Most of it has been removed.", noItems);
+    items.clear();
+    clr = rand() % 7;
+    adj = rand() % 8;
+    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 3), adjs[adj] + " " + colors[clr] + " potion", p_descrip, 1, ItemType::CONSUMABLE, noItems, noRooms));
+    clr = rand() % 7;
+    adj = rand() % 8;
+    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 3), adjs[adj] + " " + colors[clr] + " potion", p_descrip, 1, ItemType::CONSUMABLE, noItems, noRooms));
+    rooms[8][11][1] = new Room(true, noEntities, items, "Potion room", "Like the kitchen from the area above, this room is filled with glass bottles, most of which are empty.", noItems);
+    items.clear();
+    std::vector<Effect*> effects;
+    effects.push_back(new Effect(10, -1, EffectType::ATTACK));
+    items.push_back(new Item(effects, "pickaxe", ", a pickaxe that was used in an attempt to break through the metallic surface.", 5, ItemType::WEAPON, noItems, noRooms));
+    rooms[8][10][1] = new Room(true, noEntities, items, "mining room", "one of the last tunnels mined in this area. some broken pickaxes lie around the room. who ever was here was attempting to get through the metallic surface.", noItems);
+    items.clear();
+    std::vector<Room*> inRoom;
+    inRoom.push_back(rooms[6][8][1]);
+    items.push_back(new Item(noEffects, "metallic key", ", its use is unknown.", 0, ItemType::USABLE, noItems, inRoom));
+    inRoom.clear();
+    mobs.push_back(new Entity(30, 6, 2, 40, 20, items, false, "large ooze", "a large ooze. This one is clearly bigger and more powerful.", true, false, true, noRes));
+    rooms[7][10][1] = new Room(true, mobs, noItems, "Ooze chamber", "The was are covered in multicolored ooze. Prepare for a fight!", noItems);
+    rooms[5][8][0] = new Room(true, noEntities, noItems, "Porthole downwards", "Here is the entrance through the metallic surface.", noItems);
+
+    ///// FLOOR 3 /////
+
+
     connectRooms(rooms);
     currentRoom = rooms[13][6][0];
 }
@@ -130,7 +204,7 @@ void buildWorld() {
 Player* defaultPlayer() {
     std::vector<Item*> inv;
     std::vector<EffectType::E> res;
-    return new Player(50, 3, 3, 25, 10, inv, true, "Hiker", "You are a hiker hiking somewhere in the rocky mountains.", true, false, false, res, 50);
+    return new Player(50, 7, 3, 40, 10, inv, true, "Hiker", "You are a hiker hiking somewhere in the rocky mountains.", true, false, false, res, 50);
 }
 
 Player* cheatPlayer() {
@@ -265,6 +339,10 @@ void go(std::string dir) {
             actionTaken = true;
             changedRoom = true;
             std::cout << next->getDescription() << std::endl;
+            if (next->death()) {
+                player->damage(10000);
+                std::cout << "You are instantly killed." << std::endl;
+            }
         }
         else {
             std::cout << "That way is locked." << std::endl;
@@ -279,7 +357,7 @@ void activate(std::vector<std::string> phrase) {
     std::string connectors[] = { "with", "on", "in" };
     int cIndex = -1;
     for (int i = 0; i < phrase.size(); i++) {
-        for (int j = 0; j < sizeof(connectors); j++) {
+        for (int j = 0; j < 3; j++) {
             if (phrase.at(i).compare(connectors[j]) == 0) {
                 cIndex = i;
             }
@@ -368,6 +446,7 @@ void activate(std::vector<std::string> phrase) {
                             player->removeItem(it);
                             currentRoom->getDirection(dir)->unlock();
                             actionTaken = true;
+                            std::cout << "Done" << std::endl;
                             return;
                         }
                     }
@@ -608,6 +687,7 @@ void equip(std::string target) {
 
 int main() {
     bool quit = false;
+    std::srand(time(NULL));
     buildWorld();
     player = defaultPlayer();
     std::cout << player->getDescription() << std::endl;
