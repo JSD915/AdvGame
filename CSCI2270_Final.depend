@@ -5,14 +5,14 @@
 1430328010 c:\users\joseph\documents\projects\csci2270_final\include\effect.h
 	<string>
 
-1430343762 source:c:\users\joseph\documents\projects\csci2270_final\src\entity.cpp
+1430414512 source:c:\users\joseph\documents\projects\csci2270_final\src\entity.cpp
 	"Entity.h"
 	<cstdlib>
 	<iostream>
 	<Player.h>
 	<Player.h>
 
-1430328053 c:\users\joseph\documents\projects\csci2270_final\include\entity.h
+1430414513 c:\users\joseph\documents\projects\csci2270_final\include\entity.h
 	<string>
 	<Effect.h>
 	<Item.h>
@@ -48,7 +48,7 @@
 	<Entity.h>
 	<iostream>
 
-1430395302 source:c:\users\joseph\documents\projects\csci2270_final\src\room.cpp
+1430414512 source:c:\users\joseph\documents\projects\csci2270_final\src\room.cpp
 	"Room.h"
 	<Entity.h>
 	<Item.h>

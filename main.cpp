@@ -12,7 +12,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-
 int detail = 1;
 Room *currentRoom = NULL;
 Room *prevRoom = NULL;
@@ -24,6 +23,7 @@ Room *saveRoom = NULL;
 bool actionTaken = false;
 bool changedRoom = false;
 bool bossDefeated = false;
+
 std::string treasures[][2] = {{"pile of gold coins", ""},{"red gemstone", ""},{"bronze amulet",""},{"metallic ring", ""},{"small gold bar",""},
                              {"jade figurine", ""},{"silver figurine", ""},{"gold figurine", ""}, {"gold rings", ""},{"blue gemstone", ""}}; //TODO add descrips
 std::string colors[] = { "red","blue","green","black","white","orange","gray" };
@@ -580,7 +580,7 @@ void activate(std::vector<std::string> phrase) {
     }
     if (it->getType() == ItemType::USABLE) {
         if (it->getInheritedItems().size() > 0) {
-            //TODO
+            //UNIMPLEMENTED
         }
         else if (it->getInheritedRooms().size() > 0) {
             Direction::E dir;
@@ -912,7 +912,27 @@ int main() {
             bossDefeated = true;
             currentRoom->unlock();
         }
-        if (action.compare("l") == 0 || action.compare("look") == 0) {
+        if (action.at(0) == '?') {
+            std::cout << "Here are a list of commands..." << std::endl;
+            std::cout << "look: Describes the room your in." << std::endl;
+            std::cout << "examine <target>: Describes an object" << std::endl;
+            std::cout << "go <direction>: moves you to a new room in a given direction" << std::endl;
+            std::cout << "use <item> on <direction>: uses an item to unlock a locked direction." << std::endl;
+            std::cout << "throw <item> at <target>: throws an item at a target (only some items)." << std::endl;
+            std::cout << "consume <item>: consume an item." << std::endl;
+            std::cout << "attack <target>: attacks an enemy" << std::endl;
+            std::cout << "grab <item>: picks up an item in the room." << std::endl;
+            std::cout << "drop <item>: drops an item in your inventory." << std::endl;
+            std::cout << "inventory: lists all items in your inventory." << std::endl;
+            std::cout << "equip <item>: equips an item in your inventory (only some items)." << std::endl;
+            std::cout << "unequip <item>: unequips an item." << std::endl;
+            std::cout << "diagnose: gives an update on your health." << std::endl;
+            std::cout << "save: saves that game." << std::endl;
+            std::cout << "restore: restores the save game" << std::endl;
+            std::cout << "quit: quits the program" << std::endl;
+            std::cout << "restart: restart from the beginning" << std::endl;
+        }
+        else if (action.compare("l") == 0 || action.compare("look") == 0) {
             std::cout << currentRoom->getDescription() << std::endl;
         }
         else if (action.compare("x") == 0 || action.compare("examine") == 0) {

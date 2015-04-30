@@ -255,20 +255,6 @@ std::string Room::getDescription() {
 
     if (items.size() > 0) {
         s = s + "You notice there is...\n";
-        /*for (int i = 0; i < items.size(); i++) {
-            if (i == items.size() - 1) {
-                if (i == 0) {
-                    s = s + items.at(i)->getDescription();
-                }
-                else {
-                    s = s.substr(0, s.size() - 2);
-                    s = s + " and " + items.at(i)->getDescription();
-                }
-            }
-            else {
-                s = s + items.at(i)->getDescription() + ", ";
-            }
-        }*/
         for (int i = 0; i < items.size(); i++) {
             s = s + "a " + items.at(i)->getName() + "\n";
         }

@@ -49,40 +49,6 @@ bool Entity::drop(Room *r, Item *i) {
     return false;
 }
 
-/*
-bool Entity::use(Room *r, Entity *target, Item *i) {
-    EffectType::E type = EffectType::FREEZE;
-    if (getEffect(type) == NULL && hasItem(i) && i->getType() == ItemType::CONSUMABLE ) {
-        if (r->hasEntity(target) && r->hasEntity(this)) {
-            if (this->Compare(target) == 0) {
-                int acc = getBaseAccuracy();
-                if (getEffect(EffectType::STEADY) != NULL) {
-                    acc = acc + getEffect(EffectType::STEADY)->getStrength();
-                }
-                if (getEffect(EffectType::BLIND) != NULL) {
-                    acc = acc - getEffect(EffectType::BLIND)->getStrength();
-                }
-                int dod = target->getBaseDodge();
-                if (target->getEffect(EffectType::DODGE) != NULL) {
-                    dod = dod + target->getEffect(EffectType::DODGE)->getStrength();
-                }
-                if (target->getEffect(EffectType::STUN) != NULL) {
-                    dod = dod - target->getEffect(EffectType::STUN)->getStrength();
-                }
-                if (!(rand() % 100 < acc && rand() % 100 < dod)) {
-                    return false;
-                    removeItem(i);
-                }
-            }
-            target->addEffects(i, true);
-            target->addEffects(i, false);
-            removeItem(i);
-            return true;
-        }
-    }
-    return false;
-}*/
-
 int Entity::attack(Room *r, Entity *target) {
     if (r->hasEntity(target) && r->hasEntity(this) || dynamic_cast<Player*>(target) != NULL) {
         bool has_weap = false;
@@ -364,10 +330,6 @@ void Entity::addEffects(Item *item, bool buff) {
             effects.push_back(item->getEffects().at(i));
         }
     }
-}
-
-std::string Entity::getScript(bool victory, Entity other) {
-    return "TODO";
 }
 
 std::string Entity::getName() {

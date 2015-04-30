@@ -20,7 +20,6 @@ class Entity
         virtual ~Entity();
         std::vector<Effect*> getEffects();
         bool drop(Room *r, Item *i);
-        //bool use(Room *r, Entity *target, Item *i);
         int attack(Room *r, Entity *target);
         std::vector<Item*> getItems();
         bool hasItem(Item *i);
@@ -40,7 +39,6 @@ class Entity
         int getHealth();
         void addEffects(Item *i, bool buff); //Only used for consumables!!!
         void anger();
-        std::string getScript(bool victory, Entity other);
         std::string getName();
         std::string getDescription();
         Effect* getEffect(EffectType::E t);
@@ -66,7 +64,6 @@ class Entity
         std::vector<Effect*> effects;
         std::string name;
         std::string basic_description;
-        void altEffects(std::vector<Effect> e);
         std::vector<EffectType::E> resistances;
     private:
         bool movable;
