@@ -288,7 +288,7 @@ void buildWorld() {
     roomUp6_11_2->addItem(new Item(getEffects(ItemType::WEAPON, 5), "electronic sword", ", beneath the clear blade, you can complex circuitry and wiring.", 5, ItemType::WEAPON, noItems, noRooms));
     roomUp6_11_2->addItem(new Item(getEffects(ItemType::ARMOR, 5), "electronic armor", ", this powered armor looks protective.", 10, ItemType::ARMOR, noItems, noRooms));
     for (int i = 0; i < 3; i++) {
-        rnd = rand();
+        rnd = rand() % 10;
         roomUp2_5_2->addItem(new Item(noEffects, treasures[rnd][0], treasures[rnd][1], 0, ItemType::TREASURE, noItems, noRooms));
     }
     rooms[2][5][2]->assignDirection(Direction::UP, roomUp2_5_2);
@@ -314,9 +314,9 @@ void buildWorld() {
     rooms[9][7][3] = new Room(true, noEntities, noItems, "Access tunnel", "You are close to the control hub.", noItems);
     items.clear();
 
-    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 4), adjs[rand()] + " " + colors[rand()] + " potion", p_descrip, 1, ItemType::CONSUMABLE, noItems, noRooms));
-    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 4), adjs[rand()] + " " + colors[rand()] + " potion", p_descrip, 1, ItemType::CONSUMABLE, noItems, noRooms));
-    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 4), adjs[rand()] + " " + colors[rand()] + " potion", p_descrip, 1, ItemType::CONSUMABLE, noItems, noRooms));
+    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 4), adjs[rand() % 8] + " " + colors[rand() % 7] + " potion", p_descrip, 1, ItemType::CONSUMABLE, noItems, noRooms));
+    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 4), adjs[rand() % 8] + " " + colors[rand() % 7] + " potion", p_descrip, 1, ItemType::CONSUMABLE, noItems, noRooms));
+    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 4), adjs[rand() % 8] + " " + colors[rand() % 7] + " potion", p_descrip, 1, ItemType::CONSUMABLE, noItems, noRooms));
     rooms[8][6][2] = new Room(false, noEntities, items, "Supply closet", "You find a small closet with supplies.", noItems);
     mobs.clear();
     inRoom.push_back(rooms[8][6][2]);
