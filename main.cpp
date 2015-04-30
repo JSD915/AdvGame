@@ -192,13 +192,112 @@ void buildWorld() {
     inRoom.clear();
     mobs.push_back(new Entity(30, 6, 2, 40, 20, items, false, "large ooze", "a large ooze. This one is clearly bigger and more powerful.", true, false, true, noRes));
     rooms[7][10][1] = new Room(true, mobs, noItems, "Ooze chamber", "The was are covered in multicolored ooze. Prepare for a fight!", noItems);
-    rooms[5][8][0] = new Room(true, noEntities, noItems, "Porthole downwards", "Here is the entrance through the metallic surface.", noItems);
+    rooms[5][8][1] = new Room(true, noEntities, noItems, "Porthole downwards", "Here is the entrance through the metallic surface.", noItems);
+    mobs.clear();
 
     ///// FLOOR 3 /////
 
+    rooms[5][8][2] = new Room(true, noEntities, noItems, "Facility entrance", "The room you stand in has tons of intricate circuitry. All the surfaces have thin lay of a black grease like substance", noItems);
+    rooms[5][8][1]->assignDirection(Direction::DOWN, rooms[5][8][2]);
+    rooms[5][8][2]->assignDirection(Direction::UP, rooms[5][8][1]);
 
+    Entity *sentry = new Entity(20, 10, 10, 50, 20, noItems, false, "sentry", "a sentry stands ideal, seemingly uninterested in your presence.", true, false, false, noRes);
+
+    mobs.push_back(sentry);
+    rooms[2][6][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[2][9][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[2][10][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[3][6][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[3][7][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[3][8][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[3][9][2] = new Room(true, mobs, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[3][10][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[3][11][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[4][6][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[4][7][2] = new Room(true, mobs, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[4][8][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[4][11][2] = new Room(true, mobs, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[5][6][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[5][7][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[5][9][2] = new Room(true, mobs, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[5][10][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[5][11][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[6][7][2] = new Room(true, mobs, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[6][8][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[6][9][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[7][7][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+    rooms[7][8][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics. There is a sign for the self labeled control facility.", noItems);
+    rooms[7][9][2] = new Room(true, mobs, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+
+    rooms[8][8][2] = new Room(false, noEntities, noItems, "Security Room 1", "2 levels remaining.", noItems);
+    rooms[9][8][2] = new Room(false, noEntities, noItems, "Security Room 2", "1 level remaining.", noItems);
+    rooms[10][8][2] = new Room(false, noEntities, noItems, "Security Room 3", "Access to control facility granted", noItems);
+    inRoom.clear();
+    inRoom.push_back(rooms[10][8][2]);
+    Item *key3= new Item(noEffects, "key card 3", ", opens an access door.", 0, ItemType::USABLE, noItems, inRoom);
+    items.push_back(key3);
+    sentry = new Entity(20, 10, 10, 50, 20, items, false, "sentry", "a sentry stands ideal, seemingly uninterested in your presence.", true, false, true, noRes);
+    mobs.clear();
+    mobs.push_back(sentry);
+    switch(rand() % 6) {
+        case 0:
+            rooms[3][9][2] = new Room(true, mobs, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+            break;
+        case 1:
+            rooms[4][7][2] = new Room(true, mobs, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+            break;
+        case 2:
+            rooms[4][11][2] = new Room(true, mobs, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+            break;
+        case 3:
+            rooms[5][9][2] = new Room(true, mobs, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+            break;
+        case 4:
+            rooms[6][7][2] = new Room(true, mobs, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+            break;
+        case 5:
+            rooms[7][9][2] = new Room(true, mobs, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
+            break;
+    }
+    mobs.clear();
+
+    rooms[2][5][2] = new Room(true, noEntities, noItems, "Facility Exit", "You find a ladder leading up out of the strange facility.", noItems);
+    rooms[5][5][2] = new Room(true, noEntities, noItems, "Facility Exit", "You find a ladder leading up out of the strange facility.", noItems);
+    rooms[1][10][2] = new Room(true, noEntities, noItems, "Facility Exit", "You find a ladder leading up out of the strange facility.", noItems);
+    rooms[6][11][2] = new Room(true, noEntities, noItems, "Facility Exit", "You find a ladder leading up out of the strange facility.", noItems);
+    rooms[3][12][2] = new Room(true, noEntities, noItems, "Facility Exit", "You find a ladder leading up out of the strange facility.", noItems);
+    Room *roomUp2_5_2 = new Room(true, noEntities, noItems, "Treasure room", "A room that has some treasures. A nice find", noItems);
+    Room *roomUp5_5_2 = new Room(true, noEntities, noItems, "Security room", "This room house high tech security equipment.", noItems);
+    Room *roomUp1_10_2 = new Room(true, noEntities, noItems, "Security room", "This room house high tech security equipment.", noItems);
+    Room *roomUp6_11_2 = new Room(true, noEntities, noItems, "Weapon closet", "You find a room intended from holding various weapons", noItems);
+    Room *roomUp3_12_2 = new Room(true, noEntities, noItems, "Sentry hub", "As soon as you enter the room, sentries swarm you.", noItems, true);
+    inRoom.clear();
+    inRoom.push_back(rooms[8][8][2]);
+    Item *key1 = new Item(noEffects, "key card 1", ", opens an access door.", 0, ItemType::USABLE, noItems, inRoom);
+    roomUp1_10_2->addItem(key1);
+    inRoom.clear();
+    inRoom.push_back(rooms[9][8][2]);
+    Item *key2 = new Item(noEffects, "key card 2", ", opens an access door.", 0, ItemType::USABLE, noItems, inRoom);
+    roomUp5_5_2->addItem(key2);
+    inRoom.clear();
+    roomUp6_11_2->addItem(new Item(getEffects(ItemType::WEAPON, 5), "electronic sword", ", beneath the clear blade, you can complex circuitry and wiring.", 5, ItemType::WEAPON, noItems, noRooms));
+    roomUp6_11_2->addItem(new Item(getEffects(ItemType::ARMOR, 5), "electronic armor", ", this powered armor looks protective.", 10, ItemType::ARMOR, noItems, noRooms));
+    for (int i = 0; i < 3; i++) {
+        rnd = rand();
+        roomUp2_5_2->addItem(new Item(noEffects, treasures[rnd][0], treasures[rnd][1], 0, ItemType::TREASURE, noItems, noRooms));
+    }
+    rooms[2][5][2]->assignDirection(Direction::UP, roomUp2_5_2);
+    rooms[5][5][2]->assignDirection(Direction::UP, roomUp5_5_2);
+    rooms[1][10][2]->assignDirection(Direction::UP, roomUp1_10_2);
+    rooms[6][11][2]->assignDirection(Direction::UP, roomUp6_11_2);
+    rooms[3][12][2]->assignDirection(Direction::UP, roomUp3_12_2);
+    roomUp2_5_2->assignDirection(Direction::DOWN, rooms[2][5][2]);
+    roomUp5_5_2->assignDirection(Direction::DOWN, rooms[5][5][2]);
+    roomUp1_10_2->assignDirection(Direction::DOWN, rooms[1][10][2]);
+    roomUp6_11_2->assignDirection(Direction::DOWN, rooms[6][11][2]);
+    roomUp3_12_2->assignDirection(Direction::DOWN, rooms[3][12][2]);
     connectRooms(rooms);
-    currentRoom = rooms[13][6][0];
+    currentRoom = rooms[5][8][2];
 }
 
 Player* defaultPlayer() {
@@ -417,19 +516,19 @@ void activate(std::vector<std::string> phrase) {
                 dir = Direction::NORTH;
             }
             else if (target.find("south") != target.npos) {
-                dir = Direction::NORTH;
+                dir = Direction::SOUTH;
             }
             else if (target.find("east") != target.npos) {
-                dir = Direction::NORTH;
+                dir = Direction::EAST;
             }
             else if (target.find("west") != target.npos) {
-                dir = Direction::NORTH;
+                dir = Direction::WEST;
             }
             else if (target.find("up") != target.npos) {
-                dir = Direction::NORTH;
+                dir = Direction::UP;
             }
             else if (target.find("down") != target.npos) {
-                dir = Direction::NORTH;
+                dir = Direction::DOWN;
             }
             else if (target.find("door") != target.npos) {
                 std::cout << "Please specify the direction." << std::endl;
