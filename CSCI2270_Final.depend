@@ -24,7 +24,7 @@
 	<Effect.h>
 	<Room.h>
 
-1430335104 c:\users\joseph\documents\projects\csci2270_final\include\room.h
+1430395302 c:\users\joseph\documents\projects\csci2270_final\include\room.h
 	<Entity.h>
 	<Effect.h>
 	<string>
@@ -54,7 +54,7 @@
 	<Item.h>
 	<iostream>
 
-1430356946 source:c:\users\joseph\documents\projects\csci2270_final\main.cpp
+1430393280 source:c:\users\joseph\documents\projects\csci2270_final\main.cpp
 	<iostream>
 	<sstream>
 	<string>

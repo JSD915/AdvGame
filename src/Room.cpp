@@ -277,6 +277,10 @@ std::string Room::getDescription() {
     return s;
 }
 
+std::string Room::getBasicDescrip() {
+    return basic_description;
+}
+
 bool Room::death() {
     return instantDeath;
 }

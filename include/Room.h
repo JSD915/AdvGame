@@ -38,6 +38,7 @@ class Room
         Entity* removeEntity(Entity *e);
         std::string getName();
         std::string getDescription();
+        std::string getBasicDescrip();
         bool death();
         int Compare(Room *r) const {
             if (basic_description.compare(r->basic_description) != 0) {

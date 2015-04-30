@@ -16,9 +16,14 @@
 int detail = 1;
 Room *currentRoom = NULL;
 Room *prevRoom = NULL;
+Room *bossRoom = NULL;
+Room *exitRoom = NULL;
 Player *player = NULL;
+Player *savePlayer = NULL;
+Room *saveRoom = NULL;
 bool actionTaken = false;
 bool changedRoom = false;
+bool bossDefeated = false;
 std::string treasures[][2] = {{"pile of gold coins", ""},{"red gemstone", ""},{"bronze amulet",""},{"metallic ring", ""},{"small gold bar",""},
                              {"jade figurine", ""},{"silver figurine", ""},{"gold figurine", ""}, {"gold rings", ""},{"blue gemstone", ""}}; //TODO add descrips
 std::string colors[] = { "red","blue","green","black","white","orange","gray" };
@@ -201,7 +206,7 @@ void buildWorld() {
     rooms[5][8][1]->assignDirection(Direction::DOWN, rooms[5][8][2]);
     rooms[5][8][2]->assignDirection(Direction::UP, rooms[5][8][1]);
 
-    Entity *sentry = new Entity(20, 10, 10, 50, 20, noItems, false, "sentry", "a sentry stands ideal, seemingly uninterested in your presence.", true, false, false, noRes);
+    Entity *sentry = new Entity(30, 10, 10, 50, 20, noItems, false, "sentry", "a sentry stands ideal, seemingly uninterested in your presence.", true, false, false, noRes);
 
     mobs.push_back(sentry);
     rooms[2][6][2] = new Room(true, noEntities, noItems, "Circuit room", "All the walls are lined with ultra-complex electronics", noItems);
@@ -236,7 +241,7 @@ void buildWorld() {
     inRoom.push_back(rooms[10][8][2]);
     Item *key3= new Item(noEffects, "key card 3", ", opens an access door.", 0, ItemType::USABLE, noItems, inRoom);
     items.push_back(key3);
-    sentry = new Entity(20, 10, 10, 50, 20, items, false, "sentry", "a sentry stands ideal, seemingly uninterested in your presence.", true, false, true, noRes);
+    sentry = new Entity(20, 10, 10, 50, 20, items, false, "sentry", "a sentry stands ideal, seemingly uninterested in your presence.", true, false, false, noRes);
     mobs.clear();
     mobs.push_back(sentry);
     switch(rand() % 6) {
@@ -296,6 +301,39 @@ void buildWorld() {
     roomUp1_10_2->assignDirection(Direction::DOWN, rooms[1][10][2]);
     roomUp6_11_2->assignDirection(Direction::DOWN, rooms[6][11][2]);
     roomUp3_12_2->assignDirection(Direction::DOWN, rooms[3][12][2]);
+
+    ///// FLOOR 4 /////
+
+    rooms[10][8][3] = new Room(true, noEntities, noItems, "System control center entrance", "You have reached what you think is the heart of whatever this underground structure is.", noItems);
+    rooms[10][8][3]->assignDirection(Direction::UP, rooms[10][8][2]);
+    rooms[10][8][2]->assignDirection(Direction::DOWN, rooms[10][8][3]);
+    mobs.clear();
+    sentry = new Entity(20, 10, 10, 50, 20, items, false, "sentry", "a sentry is on full alert. it seems you may have tripped an alarm.", true, false, true, noRes);
+    mobs.push_back(sentry);
+    rooms[10][7][3] = new Room(true, mobs, noItems, "Access tunnel", "You are close to the control hub.", noItems);
+    rooms[9][7][3] = new Room(true, noEntities, noItems, "Access tunnel", "You are close to the control hub.", noItems);
+    items.clear();
+
+    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 4), adjs[rand()] + " " + colors[rand()] + " potion", p_descrip, 1, ItemType::CONSUMABLE, noItems, noRooms));
+    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 4), adjs[rand()] + " " + colors[rand()] + " potion", p_descrip, 1, ItemType::CONSUMABLE, noItems, noRooms));
+    items.push_back(new Item(getEffects(ItemType::CONSUMABLE, 4), adjs[rand()] + " " + colors[rand()] + " potion", p_descrip, 1, ItemType::CONSUMABLE, noItems, noRooms));
+    rooms[8][6][2] = new Room(false, noEntities, items, "Supply closet", "You find a small closet with supplies.", noItems);
+    mobs.clear();
+    inRoom.push_back(rooms[8][6][2]);
+    Item *closet_key = new Item(noEffects, "closet key card", ", seems to be for a closet.", 0, ItemType::USABLE, noItems, inRoom);
+    items.clear();
+    items.push_back(closet_key);
+    mobs.push_back(new Entity(20, 10, 10, 50, 20, items, false, "sentry 1", "a sentry is on full alert. it seems you may have tripped an alarm.", true, false, true, noRes));
+    mobs.push_back(new Entity(20, 10, 10, 50, 20, noItems, false, "sentry 2", "a sentry is on full alert. it seems you may have tripped an alarm.", true, false, true, noRes));
+    rooms[8][7][3] = new Room(true, mobs, noItems, "Access tunnel", "You are close to the control hub.", noItems);
+    rooms[7][7][3] = new Room(true, noEntities, noItems, "Access tunnel", "You are close to the control hub.", noItems);
+    items.clear();
+    rooms[6][7][3] = new Room(false, noEntities, noItems, "Control Room", "You reach the heart of the facility. Monitors and control panels are all over the room.", noItems);
+    rooms[5][7][3] = new Room(true, noEntities, noItems, "Exit shoot", "You have made, a way out. A long ladder leads up.", noItems);
+    exitRoom = new Room(true, noEntities, noItems, "Surface access", "The ladder leads to the center of a valley. It is dark now, time to head home.", noItems);
+    rooms[5][7][3]->assignDirection(Direction::UP, exitRoom);
+    bossRoom = rooms[6][7][3];
+
     connectRooms(rooms);
     currentRoom = rooms[5][8][2];
 }
@@ -437,7 +475,41 @@ void go(std::string dir) {
             currentRoom = next;
             actionTaken = true;
             changedRoom = true;
-            std::cout << next->getDescription() << std::endl;
+
+            if (currentRoom->Compare(exitRoom) == 0) {
+                std::cout << next->getBasicDescrip() << std::endl;
+                std::cout << "Congratulations! You have reached the end of the game. I hope you enjoyed it.\n" << std::endl;
+                std::cout << "Restarting..." << std::endl;
+                player = defaultPlayer();
+                buildWorld();
+            }
+            else if (currentRoom->Compare(bossRoom) == 0) {
+                if (!bossDefeated) {
+                    std::cout << next->getBasicDescrip() << std::endl;
+                    std::cout << "A figure stands and approaches you. He says in a raspy voice \"Your greed will undo you...\"\nThe doors all lock." << std::endl;
+                    currentRoom->lock();
+                    int tCount = 0;
+                    for (int i = 0; i < player->getItems().size(); i++) {
+                        if (player->getItems().at(i)->getType() == ItemType::TREASURE) {
+                            tCount++;
+                        }
+                    }
+                    std::vector<Item*> noItems;
+                    std::vector<EffectType::E> noRes;
+                    Entity *boss = new Entity(20 * tCount, 5 * tCount, 3 * tCount, 15 * tCount, 8 * tCount, noItems, false, "mysterious figure", "a mysterious figure is wearing dark clothing. you cannot make out his face.", true, false, true, noRes);
+                    currentRoom->addEntity(boss);
+                    if (tCount == 0) {
+                        boss->damage(10);
+                        std::cout << "The figure collapse to the ground, dead." << std::endl;
+                    }
+                }
+                else {
+                    std::cout << next->getDescription() << std::endl;
+                }
+            }
+            else {
+                std::cout << next->getDescription() << std::endl;
+            }
             if (next->death()) {
                 player->damage(10000);
                 std::cout << "You are instantly killed." << std::endl;
@@ -836,6 +908,10 @@ int main() {
                 }
             }
         }
+        else if (currentRoom->Compare(bossRoom) == 0) {
+            bossDefeated = true;
+            currentRoom->unlock();
+        }
         if (action.compare("l") == 0 || action.compare("look") == 0) {
             std::cout << currentRoom->getDescription() << std::endl;
         }
@@ -978,10 +1054,24 @@ int main() {
             }
         }
         else if (action.compare("save") == 0) {
-            //TODO
+            if (words.size() > 1) {
+                std::cout << "The command \"save\" does not take parameters." << std::endl;
+            }
+            else {
+                std::cout << "Saving..." << std::endl;
+                savePlayer = player;
+                saveRoom = currentRoom;
+            }
         }
         else if (action.compare("restore") == 0) {
-            //TODO
+            if (words.size() > 1) {
+                std::cout << "The command \"restore\" does not take parameters." << std::endl;
+            }
+            else {
+                std::cout << "Loading..." << std::endl;
+                player = savePlayer;
+                currentRoom = saveRoom;
+            }
         }
         else if (action.compare("xyzzy") == 0) {
             std::cout << "A hollow voice says \"fool.\"" << std::endl;
