@@ -12,7 +12,7 @@ System Requirements:
 This program will only run on Windows.
 
 Group Members: 
-I worked on this project alone.
+I worked on this project alone. 
 
 Contributors:
 cTowtie
