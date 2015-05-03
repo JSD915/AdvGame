@@ -1,39 +1,78 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="src\Item.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\Effect.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="637" topLine="0" />
+			<Cursor1 position="382" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="src\Player.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\Item.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="813" topLine="15" />
+			<Cursor1 position="42" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="22890" topLine="283" />
+			<Cursor1 position="26847" topLine="276" />
+		</Cursor>
+		<Folding>
+			<Collapse line="34" />
+			<Collapse line="43" />
+			<Collapse line="81" />
+			<Collapse line="363" />
+			<Collapse line="370" />
+			<Collapse line="386" />
+			<Collapse line="438" />
+			<Collapse line="465" />
+			<Collapse line="474" />
+			<Collapse line="562" />
+			<Collapse line="674" />
+			<Collapse line="700" />
+			<Collapse line="777" />
+			<Collapse line="814" />
+			<Collapse line="849" />
+			<Collapse line="875" />
+			<Collapse line="901" />
+		</Folding>
+	</File>
+	<File name="include\Room.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3437" topLine="15" />
 		</Cursor>
 	</File>
-	<File name="src\Entity.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\Effect.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1050" topLine="210" />
+			<Cursor1 position="911" topLine="15" />
 		</Cursor>
 	</File>
-	<File name="include\Item.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\Player.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="724" topLine="10" />
+			<Cursor1 position="418" topLine="52" />
 		</Cursor>
 	</File>
-	<File name="include\Room.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\Item.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1388" topLine="16" />
+			<Cursor1 position="2118" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="src\Room.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\Player.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="6945" topLine="242" />
+			<Cursor1 position="1948" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\Entity.cpp" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8187" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\Room.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="38" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\Entity.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3555" topLine="48" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

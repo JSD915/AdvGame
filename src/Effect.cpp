@@ -1,5 +1,7 @@
 #include "Effect.h"
 
+//FOR INFORMATION ABOUT THE CLASS AND ITS FUNCTION, PLEASE LOOK AT EFFECT.H
+
 using namespace EffectType;
 
 Effect::Effect(int s, int d, EffectType::E t, bool b) {
@@ -52,74 +54,6 @@ Effect::Effect(int s, int d, EffectType::E t, bool b) {
             break;
         case BLIND:
             name = "Blind";
-            break;
-    }
-}
-
-Effect::Effect(int s, int d, EffectType::E t) {
-    strength = s;
-    duration = d;
-    type = t;
-    switch (type) {
-        case ATTACK:
-            name = "Attack";
-            buff = true;
-            break;
-        case EffectType::ARMOR:
-            name = "Armor";
-            buff = true;
-            break;
-        case REGEN:
-            name = "Regeneration";
-            buff = true;
-            break;
-        case LIFE_STEAL:
-            name = "Life steal";
-            buff = true;
-            break;
-        case RUSH:
-            name = "Rush";
-            buff = true;
-            break;
-        case FURY:
-            name = "Fury";
-            buff = true;
-            break;
-        case IMMUNITY:
-            name = "Immunity";
-            buff = true;
-            break;
-        case DODGE:
-            name = "Dodge";
-            buff = true;
-            break;
-        case STEADY:
-            name = "Accuracy";
-            buff = true;
-            break;
-        case BURN:
-            name = "Burn";
-            buff = false;
-            break;
-        case FREEZE:
-            name = "Freeze";
-            buff = false;
-            break;
-        case POISON:
-            name = "Poison";
-            buff = false;
-            break;
-        case STUN:
-            name = "Stun";
-            buff = false;
-            break;
-        case FEAR:
-            name = "Fear";
-            buff = false;
-            break;
-        case BLIND:
-            name = "Blind";
-            buff = false;
             break;
     }
 }

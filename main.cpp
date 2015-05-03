@@ -12,6 +12,13 @@
 #include <stdlib.h>
 #include <time.h>
 
+
+/* Before reading on
+I would recommend read the other files first in the following order: Effect, Item, Entity, Player, Room.
+Reading those first will help you to best understand the code.
+*/
+
+
 int detail = 1;
 Room *currentRoom = NULL;
 Room *prevRoom = NULL;
@@ -24,12 +31,16 @@ bool actionTaken = false;
 bool changedRoom = false;
 bool bossDefeated = false;
 
-std::string treasures[][2] = {{"pile of gold coins", ""},{"red gemstone", ""},{"bronze amulet",""},{"metallic ring", ""},{"small gold bar",""},
-                             {"jade figurine", ""},{"silver figurine", ""},{"gold figurine", ""}, {"gold rings", ""},{"blue gemstone", ""}}; //TODO add descrips
+//used for building items
+std::string treasures[][2] = {{"pile of gold coins", ", a pile of old, dusty coins."},{"red gemstone", ", you cannot see one flaw."},{"bronze amulet",", it is in the shape of an eagle"},
+                              {"metallic ring", ", some unknown gray metal."},{"small gold bar",", what a find!"}, {"jade figurine", ", odd seeing an old jade artifact."},
+                              {"silver figurine", ", it is shiny, polished."},{"gold figurine", ", it looks shiny, polished."}, {"gold rings", ", s small pile of them."},
+                              {"blue gemstone", ", you cannot see one flaw."}};
 std::string colors[] = { "red","blue","green","black","white","orange","gray" };
 std::string adjs[] = { "cloudy","pulsing","bubbling","viscous","cold","hot","murky","clear" };
 std::string p_descrip = ", its properties are unknown to you.";
 
+//returns a list of random effects for a given type and a power p
 std::vector<Effect*> getEffects(ItemType::E type, int power) {
     std::vector<Effect*> effects;
     if (type == ItemType::DECOR || type == ItemType::TREASURE || type == ItemType::USABLE){
@@ -43,25 +54,31 @@ std::vector<Effect*> getEffects(ItemType::E type, int power) {
         effects.push_back(new Effect(((power + 1) * 3 / 2), -1, EffectType::ATTACK, true));
         break;
     case CONSUMABLE:
-        effects.push_back(new Effect((power + 1) * 10, power + 1, static_cast<EffectType::E>(rand() % 14)));
+        effects.push_back(new Effect((power + 1) * 10, power + 1, static_cast<EffectType::E>(rand() % 14), true));
         break;
     }
     for (int i = 0; i < power; i++) {
         if (type == ItemType::ARMOR) {
-            effects.push_back(new Effect(power + 1, -1, static_cast<EffectType::E>(rand() % 9)));
+            effects.push_back(new Effect(power + 1, -1, static_cast<EffectType::E>(rand() % 9), true));
         }
         if (type == ItemType::WEAPON) {
             int rnd = rand() % 13;
             if (rnd != 0) rnd += 2;
-            effects.push_back(new Effect(power + 1, -1, static_cast<EffectType::E>(rnd)));
+            if (rnd > 8) {
+                effects.push_back(new Effect(power + 1, -1, static_cast<EffectType::E>(rnd), false));
+            }
+            else {
+                effects.push_back(new Effect(power + 1, -1, static_cast<EffectType::E>(rnd), true));
+            }
         }
         if (type == ItemType::CONSUMABLE) {
-            effects.push_back(new Effect((power + 1) * 10, power + 1, static_cast<EffectType::E>(rand() % 15)));
+            effects.push_back(new Effect((power + 1) * 10, power + 1, static_cast<EffectType::E>(rand() % 15), true));
         }
     }
     return effects;
 }
 
+//given 3D array of rooms, all the adjacent rooms with the same floor (final array dimension) are connected
 void connectRooms(Room *rooms[14][14][4]) {
     for (int r = 0; r < 14; r++) {
         for (int c = 0; c < 14; c++) {
@@ -85,6 +102,7 @@ void connectRooms(Room *rooms[14][14][4]) {
     }
 }
 
+//constructs all the rooms and adds entities and items only does some connections
 void buildWorld() {
     Room *rooms[14][14][4]; //[row][column][floor]
     for (int r = 0; r < 14; r++) {
@@ -123,7 +141,7 @@ void buildWorld() {
     rooms[12][8][0] = new Room(true, eR12_8_0, noItems, "Cave exit", "A long natural cave lead to the bright light of day.", noItems);
     rooms[10][7][0] = new Room(true, noEntities, noItems, "Living Quarters North",
         "This is a room clear intended to sleep many. There are several dozen piles of rotten grass that were most likely used for beds.", noItems);
-    //Item *finalKey = new Item(noEffects, "old rusted key", ", it's use is a mystery.", 0, ItemType::USABLE, noItems, noRooms); //ad room later
+
     rooms[10][8][0] = new Room(true, noEntities, noItems, "Grand Hall South",
         "You stand at the end of a large ornate hall. Massive pillars stretch up to the ceiling. Thick granite slabs line the floor. The hall stretches far in front of you.", noItems);
     rooms[9][8][0] = new Room(true, noEntities, noItems, "Grand Hall", "The grand hall continues onward. It is very consistent and symmetrical.", noItems);
@@ -187,7 +205,7 @@ void buildWorld() {
     rooms[8][11][1] = new Room(true, noEntities, items, "Potion room", "Like the kitchen from the area above, this room is filled with glass bottles, most of which are empty.", noItems);
     items.clear();
     std::vector<Effect*> effects;
-    effects.push_back(new Effect(10, -1, EffectType::ATTACK));
+    effects.push_back(new Effect(10, -1, EffectType::ATTACK, true));
     items.push_back(new Item(effects, "pickaxe", ", a pickaxe that was used in an attempt to break through the metallic surface.", 5, ItemType::WEAPON, noItems, noRooms));
     rooms[8][10][1] = new Room(true, noEntities, items, "mining room", "one of the last tunnels mined in this area. some broken pickaxes lie around the room. who ever was here was attempting to get through the metallic surface.", noItems);
     items.clear();
@@ -329,21 +347,27 @@ void buildWorld() {
     rooms[7][7][3] = new Room(true, noEntities, noItems, "Access tunnel", "You are close to the control hub.", noItems);
     items.clear();
     rooms[6][7][3] = new Room(false, noEntities, noItems, "Control Room", "You reach the heart of the facility. Monitors and control panels are all over the room.", noItems);
+    inRoom.clear();
+    inRoom.push_back(rooms[6][7][3]);
+    Item *finalKey = new Item(noEffects, "old rusted key", ", it's use is a mystery.", 0, ItemType::USABLE, noItems, inRoom);
+    rooms[10][7][0]->addItem(finalKey);
     rooms[5][7][3] = new Room(true, noEntities, noItems, "Exit shoot", "You have made, a way out. A long ladder leads up.", noItems);
     exitRoom = new Room(true, noEntities, noItems, "Surface access", "The ladder leads to the center of a valley. It is dark now, time to head home.", noItems);
     rooms[5][7][3]->assignDirection(Direction::UP, exitRoom);
     bossRoom = rooms[6][7][3];
 
     connectRooms(rooms);
-    currentRoom = rooms[5][8][2];
+    currentRoom = rooms[13][6][0];
 }
 
+//returns a basic player
 Player* defaultPlayer() {
     std::vector<Item*> inv;
     std::vector<EffectType::E> res;
     return new Player(50, 7, 3, 40, 10, inv, true, "Hiker", "You are a hiker hiking somewhere in the rocky mountains.", true, false, false, res, 50);
 }
 
+//returns an almighty player
 Player* cheatPlayer() {
     std::vector<Item*> noItems;
     std::vector<Room*> noRooms;
@@ -351,14 +375,15 @@ Player* cheatPlayer() {
     std::vector<Item*> cheatItems;
     std::vector<Effect*> effects;
     std::vector<EffectType::E> res;
-    effects.push_back(new Effect(1, -1, EffectType::IMMUNITY));
+    effects.push_back(new Effect(1, -1, EffectType::IMMUNITY, true));
     cheatItems.push_back(new Item(effects, "armor of the gods", ", if thats how you wan to play.", 0, ItemType::ARMOR, noItems, noRooms));
     effects.clear();
-    effects.push_back(new Effect(10000, -1, EffectType::ATTACK));
+    effects.push_back(new Effect(10000, -1, EffectType::ATTACK, true));
     cheatItems.push_back(new Item(effects, "sword of the gods", ", if that's how you want to play...", 0, ItemType::WEAPON, noItems, noRooms));
     return new Player(10000, 10000, 10000, 100, 100, cheatItems, true, "Cheater", "Someone who is lazy.", true, false, false, res, 10000);
 }
 
+//interprets input and prints out informations on a given target
 void examine(std::string target) {
     target = target.substr(0, target.size() - 1);
     int possibilities = 0;
@@ -410,6 +435,7 @@ void examine(std::string target) {
     }
 }
 
+//interprets input and attempts to attack a given entity
 void attack(std::string target) {
     target = target.substr(0, target.size() - 1);
     int possibilities = 0;
@@ -436,14 +462,16 @@ void attack(std::string target) {
 
 }
 
+//all aggressive enemies will attack the player
 void enemyAttacks() {
     for (int i = 0; i < currentRoom->getEntities().size(); i++) {
-        if (currentRoom->getEntities().at(i)->isAggressive() && currentRoom->getEntities().at(i)->isAlive() && currentRoom->getEntities().at(i)->getEffect(EffectType::RUSH) == 0) {
+        if (currentRoom->getEntities().at(i)->isAggressive() && currentRoom->getEntities().at(i)->isAlive() && currentRoom->getEntities().at(i)->getEffect(EffectType::RUSH, true) == 0) {
             currentRoom->getEntities().at(i)->attack(currentRoom, player);
         }
     }
 }
 
+//attempts to move the player in a specified direction dir
 void go(std::string dir) {
     dir.erase(std::remove_if(dir.begin(), dir.end(), isspace), dir.end());
     Room *next = NULL;
@@ -479,6 +507,13 @@ void go(std::string dir) {
             if (currentRoom->Compare(exitRoom) == 0) {
                 std::cout << next->getBasicDescrip() << std::endl;
                 std::cout << "Congratulations! You have reached the end of the game. I hope you enjoyed it.\n" << std::endl;
+                int score = 0;
+                for (int i = 0; i < player->getItems().size(); i++) {
+                    if (player->getItems().at(i)->getType() == ItemType::TREASURE) {
+                        score += 10;
+                    }
+                }
+                std::cout << "Total Score: " << score << std::endl;
                 std::cout << "Restarting..." << std::endl;
                 player = defaultPlayer();
                 buildWorld();
@@ -524,6 +559,7 @@ void go(std::string dir) {
     }
 }
 
+//interprets a phrase and attempts to activate (unlock a door only as of now) with an item
 void activate(std::vector<std::string> phrase) {
     std::string connectors[] = { "with", "on", "in" };
     int cIndex = -1;
@@ -635,6 +671,7 @@ void activate(std::vector<std::string> phrase) {
     }
 }
 
+//interprets input and attempts to have the player consume a consumable item named target
 void consume(std::string target) {
     target = target.substr(0, target.size() - 1);
     int possibilities = 0;
@@ -652,7 +689,7 @@ void consume(std::string target) {
     else {
         for (int i = 0; i < player->getItems().size(); i++) {
             if (player->getItems().at(i)->getName().find(target) != player->getItems().at(i)->getName().npos) {
-                if (player->use(player->getItems().at(i))) {
+                if (player->consume(player->getItems().at(i))) {
                     actionTaken = true;
                 }
             }
@@ -660,6 +697,7 @@ void consume(std::string target) {
     }
 }
 
+//interprets input and attempts to throw a consumable with a name in phrase at a target named in phrase
 void throwItem(std::vector<std::string> phrase) {
     int atIndex = -1;
     for (int i = 1; i < phrase.size(); i++) {
@@ -736,6 +774,7 @@ void throwItem(std::vector<std::string> phrase) {
     }
 }
 
+//attempts to pick an item named target
 void grab(std::string target) {
     target = target.substr(0, target.size() - 1);
     if (target.compare("all") == 0) {
@@ -772,6 +811,7 @@ void grab(std::string target) {
     }
 }
 
+//attempts to have the player drop a specified item named target
 void drop(std::string target) {
     target = target.substr(0, target.size() - 1);
     if (target.compare("all") == 0) {
@@ -806,6 +846,7 @@ void drop(std::string target) {
     }
 }
 
+//attempt to have the player unequip an item named target
 void unequip(std::string target) {
     target = target.substr(0, target.size() - 1);
     int possibilities = 0;
@@ -831,6 +872,7 @@ void unequip(std::string target) {
     }
 }
 
+//attempt to have the player equip an item named target
 void equip(std::string target) {
     target = target.substr(0, target.size() - 1);
     int possibilities = 0;
@@ -856,6 +898,7 @@ void equip(std::string target) {
     }
 }
 
+//partially interprets inputs and contains the primary game loop.
 int main() {
     bool quit = false;
     std::srand(time(NULL));
@@ -864,14 +907,16 @@ int main() {
     std::cout << player->getDescription() << std::endl;
     std::cout << "As you were hiking along a mountain face, you slip and tumble down the steep slope. As you fall you knock you head and go unconscious. When you wake, you find yourself in the bottom of a tall, vertical cave." << std::endl;
     std::cout << currentRoom->getDescription() << std::endl;
+    std::cout << "If you are unsure what to do, type \"?\"" << std::endl;
     std::string input;
+    //continues as long as the player continues to enter lines and while they have quit
     while (!quit && getline(std::cin, input)) {
+        //removes spaces from input and puts it in a vector
         std::transform(input.begin(), input.end(), input.begin(), :: tolower);
         std::istringstream iss(input);
         std::vector<std::string> words;
-        std::copy(std::istream_iterator<std::string>(iss),
-             std::istream_iterator<std::string>(),
-             back_inserter(words));
+        std::copy(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>(), back_inserter(words));
+        //if theres no input
         if (words.size() == 0) {
             continue;
         }
@@ -879,6 +924,7 @@ int main() {
         std::string phrase = "";
         actionTaken = false;
         changedRoom = false;
+        //if the action entered is "pick up" (because its the only command that is not one word
         if (words.size() > 1) {
             if (words.at(0).compare("pick") == 0 && words.at(1).compare("up") == 0) {
                 action = "pick up";
@@ -892,6 +938,7 @@ int main() {
                 phrase = phrase.substr(0, phrase.length());
             }
         }
+        //builds a string of the words that are not the action
         else {
             if (words.size() > 1) {
                 for (int i = 1; i < words.size(); i++) {
@@ -900,18 +947,22 @@ int main() {
                 phrase = phrase.substr(0, phrase.length());
             }
         }
+        //says what enemies are rushing you (attacking first)
         if (currentRoom->hasAgressiveMob()) {
             for (int i = 0; i < currentRoom->getEntities().size(); i++) {
-                if (currentRoom->getEntities().at(i)->getEffect(EffectType::RUSH)) {
+                if (currentRoom->getEntities().at(i)->getEffect(EffectType::RUSH, true)) {
                     std::cout << "You are rushed by the " << currentRoom->getEntities().at(i)->getName() << "." << std::endl;
                     currentRoom->getEntities().at(i)->attack(currentRoom, player);
                 }
             }
         }
+        //if the boss was defeated (room unlocked)
         else if (currentRoom->Compare(bossRoom) == 0) {
             bossDefeated = true;
             currentRoom->unlock();
         }
+        //interprets all the actions possible
+        //...
         if (action.at(0) == '?') {
             std::cout << "Here are a list of commands..." << std::endl;
             std::cout << "look: Describes the room your in." << std::endl;
@@ -1118,15 +1169,20 @@ int main() {
         else {
             std::cout << action << " could not be interpreted." << std::endl;
         }
+        //... no more actions
+        //if an action happened (not all commands count as actions)
         if (actionTaken) {
+            //enemies attack
             if (!changedRoom) {
                 enemyAttacks();
             }
+            //refreshes all effects
             player->refreshEffects();
             for (int i = 0; i < currentRoom->getEntities().size(); i++) {
                 currentRoom->getEntities().at(i)->refreshEffects();
             }
         }
+        //if the player dies, game restarts
         if (!player->isAlive()) {
             std::cout << "\n\nRestarting...\n" << std::endl;
             player = defaultPlayer();

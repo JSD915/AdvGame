@@ -4,6 +4,8 @@
 #include <Player.h>
 #include <Player.h>
 
+//FOR INFORMATION ABOUT THE CLASS AND ITS FUNCTION, PLEASE LOOK AT ENTITY.H
+
 using namespace EffectType;
 using namespace ItemType;
 
@@ -61,47 +63,44 @@ int Entity::attack(Room *r, Entity *target) {
         }
         int acc = 0;
         if (has_weap || (dynamic_cast<Player*>(this) == NULL)) {
-            //for (int i = 0; i < getEffects().size(); i++) {
-            //    std::cout << getEffects().at(i)->getInfo() << std::endl;
-            //}
-            if (getEffect(EffectType::FREEZE) == 0) {
+            if (getEffect(EffectType::FREEZE, true) == 0) {
                 if (!target->isPassive()) {
                     target->anger();
                 }
                 int attacks = 1;
-                if (getEffect(EffectType::FURY) != 0) {
-                    attacks = getEffect(EffectType::FURY)->getStrength();
+                if (getEffect(EffectType::FURY, true) != 0) {
+                    attacks = getEffect(EffectType::FURY, true)->getStrength();
                 }
                 for (int i = 0; i < attacks; i++)
                 acc = getBaseAccuracy();
                 int dod = target->getBaseDodge();
-                if (getEffect(EffectType::STEADY) != 0) {
-                    acc = acc + getEffect(EffectType::STEADY)->getStrength();
+                if (getEffect(EffectType::STEADY, true) != 0) {
+                    acc = acc + getEffect(EffectType::STEADY, true)->getStrength();
                 }
-                if (getEffect(EffectType::BLIND) != 0) {
-                    acc = acc - getEffect(EffectType::BLIND)->getStrength();
+                if (getEffect(EffectType::BLIND, true) != 0) {
+                    acc = acc - getEffect(EffectType::BLIND, true)->getStrength();
                 }
-                if (target->getEffect(EffectType::DODGE) != 0) {
-                    dod = dod + target->getEffect(EffectType::DODGE)->getStrength();
+                if (target->getEffect(EffectType::DODGE, true) != 0) {
+                    dod = dod + target->getEffect(EffectType::DODGE, true)->getStrength();
                 }
-                if (target->getEffect(EffectType::STUN) != 0) {
-                    dod = dod - target->getEffect(EffectType::STUN)->getStrength();
+                if (target->getEffect(EffectType::STUN, true) != 0) {
+                    dod = dod - target->getEffect(EffectType::STUN, true)->getStrength();
                 }
                 int dmg = getBaseAttack();
-                if (getEffect(EffectType::ATTACK) != 0) {
-                    dmg = dmg + getEffect(EffectType::ATTACK)->getStrength();
+                if (getEffect(EffectType::ATTACK, true) != 0) {
+                    dmg = dmg + getEffect(EffectType::ATTACK, true)->getStrength();
                 }
-                if (getEffect(EffectType::FEAR) != 0) {
-                    dmg = dmg - getEffect(EffectType::FEAR)->getStrength();
+                if (getEffect(EffectType::FEAR, true) != 0) {
+                    dmg = dmg - getEffect(EffectType::FEAR, true)->getStrength();
                 }
                 dmg = dmg - target->getBaseArmor();
-                if (target->getEffect(EffectType::ARMOR) != 0) {
-                    dmg = dmg - target->getEffect(EffectType::ARMOR)->getStrength();
+                if (target->getEffect(EffectType::ARMOR, true) != 0) {
+                    dmg = dmg - target->getEffect(EffectType::ARMOR, true)->getStrength();
                 }
-                if (target->getEffect(EffectType::BURN) != 0 ) {
-                    dmg = dmg + target->getEffect(EffectType::BURN)->getStrength();
+                if (target->getEffect(EffectType::BURN, true) != 0) {
+                    dmg = dmg + target->getEffect(EffectType::BURN, true)->getStrength();
                 }
-                if (target->getEffect(EffectType::IMMUNITY) != 0) {
+                if (target->getEffect(EffectType::IMMUNITY, true) != 0) {
                     if (dynamic_cast<Player*>(target) == NULL) {
                         std::cout << "The target is immune." << std::endl;
                     }
@@ -125,9 +124,9 @@ int Entity::attack(Room *r, Entity *target) {
                             else {
                                 std::cout << "You are hit." << std::endl;
                             }
-                            if (getEffect(EffectType::LIFE_STEAL) != 0) {
+                            if (getEffect(EffectType::LIFE_STEAL, true) != 0) {
                                 if (dmg > target->getHealth()) {
-                                    health = health + int(target->getHealth() * (getEffect(EffectType::LIFE_STEAL)->getStrength() / 100));
+                                    health = health + int(target->getHealth() * (getEffect(EffectType::LIFE_STEAL, true)->getStrength() / 100));
                                     if (dynamic_cast<Player*>(target) == NULL) {
                                         std::cout << "You drain some your enemies life force." << std::endl;
                                     }
@@ -136,7 +135,7 @@ int Entity::attack(Room *r, Entity *target) {
                                     }
                                 }
                                 else {
-                                    health = health + int(dmg * (getEffect(EffectType::LIFE_STEAL)->getStrength() / 100));
+                                    health = health + int(dmg * (getEffect(EffectType::LIFE_STEAL, true)->getStrength() / 100));
                                 }
                             }
                             if (dmg < 2) {
@@ -153,8 +152,11 @@ int Entity::attack(Room *r, Entity *target) {
                                 std::cout << "The attack deals massive damage." << std::endl;
                             }
                             target->damage(dmg);
-                            if (weapon != NULL) {
-                                target->addEffects(weapon, false);
+                            for (int i = 0; i < getEffects().size(); i++) {
+                                if (getEffects().at(i)->isDebuff()) {
+                                    Effect *e = new Effect(getEffects().at(i)->getStrength(), getEffects().at(i)->getDuration(), getEffects().at(i)->getType(), true);
+                                    target->addEffect(e);
+                                }
                             }
                             if (!target->isAlive()) {
                                 if (dynamic_cast<Player*>(target) == NULL) {
@@ -166,9 +168,6 @@ int Entity::attack(Room *r, Entity *target) {
                                 for (int i = 0; i < target->getItems().size(); i++) {
                                     if (dynamic_cast<Player*>(target) == NULL) {
                                         target->drop(r, target->getItems().at(i));
-                                    }
-                                    else {
-                                        drop(r, target->getItems().at(i));
                                     }
                                 }
                                 break;
@@ -222,13 +221,15 @@ Item* Entity::removeItem(Item *item) {
 void Entity::refreshEffects() {
     for (int i = 0; i < effects.size(); i++) {
         effects.at(i)->reduce();
-        switch (effects.at(i)->getType()) {
-            case EffectType::POISON:
-                health = health - effects.at(i)->getStrength();
-                break;
-            case EffectType::REGEN:
-                health = health + effects.at(i)->getStrength();
-                break;
+        if (effects.at(i)->isBuff()) {
+            switch (effects.at(i)->getType()) {
+                case EffectType::POISON:
+                    health = health - effects.at(i)->getStrength();
+                    break;
+                case EffectType::REGEN:
+                    health = health + effects.at(i)->getStrength();
+                    break;
+            }
         }
         if (effects.at(i)->getDuration() == 0) {
             effects.erase(effects.begin() + i);
@@ -324,12 +325,30 @@ int Entity::getHealth() {
     return health;
 }
 
-void Entity::addEffects(Item *item, bool buff) {
+void Entity::addEffects(Item *item) {
     for (int i = 0; i < item->getEffects().size(); i++) {
-        if (item->getEffects().at(i)->isBuff() == buff) {
+        Effect *cur = getEffect(item->getEffects().at(i)->getType(), item->getEffects().at(i)->isBuff());
+        if (cur != 0) {
+            Effect *e = new Effect(cur->getStrength() + item->getEffects().at(i)->getStrength(), item->getEffects().at(i)->getDuration(), cur->getType(), cur->isBuff());
+            effects.erase(effects.begin() + i);
+            effects.push_back(e);
+        }
+        else {
             effects.push_back(item->getEffects().at(i));
         }
     }
+}
+
+void Entity::addEffect(Effect *e) {
+    for (int i = 0; i < getEffects().size(); i++) {
+        if (getEffects().at(i)->getType() == e->getType() && getEffects().at(i)->isBuff() == e->isBuff()) {
+            Effect *nEffect = new Effect(getEffects().at(i)->getStrength() + e->getStrength(), e->getDuration(), e->getType(), e->isBuff());
+            effects.erase(effects.begin() + i);
+            effects.push_back(nEffect);
+            return;
+        }
+    }
+    effects.push_back(e);
 }
 
 std::string Entity::getName() {
@@ -348,9 +367,9 @@ std::string Entity::getDescription() {
     return s;
 }
 
-Effect* Entity::getEffect(EffectType::E t) {
+Effect* Entity::getEffect(EffectType::E t, bool buff) {
     for (int i = 0; i < getEffects().size(); i++) {
-        if (getEffects().at(i)->getType() == t) {
+        if (getEffects().at(i)->getType() == t && getEffects().at(i)->isBuff() == buff) {
             return getEffects().at(i);
         }
     }

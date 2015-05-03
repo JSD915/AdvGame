@@ -3,6 +3,8 @@
 #include <Entity.h>
 #include <iostream>
 
+//FOR INFORMATION ABOUT THE CLASS AND ITS FUNCTION, PLEASE LOOK AT PLAYER.H
+
 Player::~Player() {
     delete this;
 }
@@ -20,14 +22,13 @@ bool Player::grab(Room *r, Item *i) {
     return false;
 }
 
-bool Player::use(Item *i) {
+bool Player::consume(Item *i) {
     if (hasItem(i)) {
         if (i->getType() == ItemType::CONSUMABLE) {
             for (int j = 0; j < i->getEffects().size(); j++) {
                 std::cout << "Effect added: " << i->getEffects().at(j)->getName() << std::endl;
             }
-            addEffects(i, true);
-            addEffects(i, false);
+            addEffects(i);
             removeItem(i);
             return true;
         }
@@ -41,8 +42,7 @@ bool Player::use(Item *i) {
 bool Player::throwItem(Item *i, Entity *e) {
     if (hasItem(i)) {
         if (i->canThrow()) {
-            e->addEffects(i, true);
-            e->addEffects(i, true);
+            e->addEffects(i);
             removeItem(i);
             return true;
         }
@@ -92,10 +92,6 @@ Room* Player::activate(Room *r, Item *item, Direction::E dir) {
         }
     }
     return NULL;
-}
-
-Room* Player::go(Room *r, Direction::E d) {
-
 }
 
 int Player::getCarryCapacity() {

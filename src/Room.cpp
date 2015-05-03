@@ -3,6 +3,8 @@
 #include <Item.h>
 #include <iostream>
 
+//FOR INFORMATION ABOUT THE CLASS AND ITS FUNCTION, PLEASE LOOK AT ROOM.H
+
 using namespace Direction;
 
 Room::Room(bool o, std::vector<Entity*> es, std::vector<Item*> is, std::string nm, std::string b_d, std::vector<Item*> us) {

@@ -1,6 +1,8 @@
 #include "Item.h"
 #include <Effect.h>
 
+//FOR INFORMATION ABOUT THE CLASS AND ITS FUNCTION, PLEASE LOOK AT ITEM.H
+
 using namespace ItemType;
 
 Item::Item(std::vector<Effect*> e, std::string nm, std::string b_d, int w, ItemType::E t, std::vector<Item*> i_i, std::vector<Room*> i_r) {
