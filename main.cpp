@@ -1026,7 +1026,7 @@ int main() {
                 throwItem(words);
             }
         }
-        else if (action.compare("consume") == 0 || action.compare("eat") == 0 || action.compare("eat") == 0) {
+        else if (action.compare("consume") == 0 || action.compare("eat") == 0 || action.compare("swallow") == 0) {
             if (words.size() == 1) {
                 std::cout << "The command \"drop\" takes a parameter." << std::endl;
             }
